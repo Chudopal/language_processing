@@ -91,7 +91,7 @@ class AlphabetMethodAnalyzer(Analyzer):
     def analyze_text(self):
         for language, data in self.train_data.items():
             self._language_probability.update({
-                language: len((data - set(self._text))
+                language: len(data - (data - set(self._text))
                     )/len(data)
             })
 

@@ -73,7 +73,6 @@ class Analyzer(ABC):
         return re.sub(
             "\[[\d, \w]*\]|,|\.|!|:|#|'|\(|\)|\n|\[|\]",
             " ", no_punct_text)
-        
 
     @abstractmethod
     def analyze_text(self) -> None:
@@ -156,9 +155,9 @@ class NeuralMethodAnalyzer(Analyzer):
         for _, language in self.train_data.items():
             if language == self.train_data.get(
                 detect(self._text)):
-                probability = 0.99
+                probability = 1
             else:
-                probability = 0.01
+                probability = 0
             self._language_probability.update({
                 language: probability
             })
@@ -204,6 +203,6 @@ def main():
 if __name__ == "__main__":
     train()
     print("English")
-    analyze_document("tests_samples/en/1_sample.txt")
+    analyze_document("tests_samples/en/3_sample.txt")
     print("Spanish")
-    analyze_document("tests_samples/es/1_sample.txt")
+    analyze_document("tests_samples/es/3_sample.txt")

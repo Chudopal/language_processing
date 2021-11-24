@@ -1,3 +1,4 @@
+from typing import Dict
 import nltk
 
 
@@ -30,20 +31,34 @@ def install_nltk_dependencies():
     nltk.download('averaged_perceptron_tagger')
 
 
-def analyze_document(file_path):
+def analyze_document(file_path: str) -> Dict:
     text = FileReader(file_path).get_text()
+    return {
+        "word": WordFrequencyAnalyzer(text).execute(),
+        "neural": NeuralMethodAnalyzer(text).execute(),
+        "alphabet": AlphabetMethodAnalyzer(text).execute()
+    }
 
-    print("word", WordFrequencyAnalyzer(text).execute())
-    print("neural" ,NeuralMethodAnalyzer(text).execute())
-    print("Alphabet" ,AlphabetMethodAnalyzer(text).execute())
 
+def console_print(data: Dict):
+    language_mapper: int = {
+        Language.ENGLISH: "English",
+        Language.SPANISH: "Spanish"
+    }
+    for method, result in data.items():
+        print(f"{method}")
+        for language, probability in result.items():
+            print("\t",
+                language_mapper.get(language),
+                f"{int(probability*100)}%"
+            )
 
-def main():
-    train()
+def console_interface() -> Dict[Language, float]:
+    document_path = input("Type path to the document: ")
+
+    return analyze_document(f"tests_samples/{document_path}.txt")
 
 if __name__ == "__main__":
+    install_nltk_dependencies()
     train()
-    print("English")
-    analyze_document("tests_samples/en/3_sample.txt")
-    print("Spanish")
-    analyze_document("tests_samples/es/3_sample.txt")
+    console_print(console_interface())

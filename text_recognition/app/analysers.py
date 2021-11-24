@@ -23,7 +23,7 @@ class Analyzer(ABC):
         self._language_probability: Dict[
             Language, float] = dict()
 
-    def execute(self) -> Language:
+    def execute(self) -> Dict[Language, float]:
         self._text = self.prepare_data(
             self._text
         )

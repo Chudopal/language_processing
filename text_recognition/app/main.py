@@ -10,6 +10,7 @@ from nltk import word_tokenize
 from nltk.corpus import wordnet as wn
 from nltk.stem.wordnet import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
+import re
 
 
 class Language(Enum):
@@ -65,10 +66,14 @@ class Analyzer(ABC):
     @classmethod
     def prepare_data(cls, text) -> str:
         text = text.lower()
-        return "".join(
+        no_punct_text = "".join(
             [char for char in text
             if char not in cls.punctuation]
         )
+        return re.sub(
+            "\[[\d, \w]*\]|,|\.|!|:|#|'|\(|\)|\n|\[|\]",
+            " ", no_punct_text)
+        
 
     @abstractmethod
     def analyze_text(self) -> None:
@@ -186,7 +191,7 @@ def install_nltk_dependencies():
 
 
 def analyze_document(file_path):
-    text = FileReader("training_samples/en/").get_text()
+    text = FileReader(file_path).get_text()
 
     print("word", WordFrequencyAnalyzer(text).execute())
     print("neural" ,NeuralMethodAnalyzer(text).execute())
@@ -196,10 +201,9 @@ def analyze_document(file_path):
 def main():
     train()
 
-
 if __name__ == "__main__":
     train()
     print("English")
-    analyze_document("test_samples/en/2_sample.txt")
+    analyze_document("tests_samples/en/1_sample.txt")
     print("Spanish")
-    analyze_document("test_samples/es/2_sample.txt")
+    analyze_document("tests_samples/es/1_sample.txt")

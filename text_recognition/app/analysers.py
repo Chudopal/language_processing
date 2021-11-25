@@ -151,4 +151,3 @@ class NeuralMethodAnalyzer(Analyzer):
         cls.train_data.update({
             text: language
         })
-        print(cls.train_data)

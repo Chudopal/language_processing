@@ -62,3 +62,27 @@ if __name__ == "__main__":
     install_nltk_dependencies()
     train()
     console_print(console_interface())
+
+
+# import spacy
+# from spacy.language import Language
+# from spacy_langdetect import LanguageDetector
+
+# def get_lang_detector(nlp, name):
+#     return LanguageDetector()
+
+# en = spacy.load("en_core_web_sm")
+# Language.factory("language_detector", func=get_lang_detector)
+# Language.factory("language_detector", func=get_lang_detector)
+
+# es.add_pipe('language_detector', last=True)
+# en.add_pipe('language_detector', last=True)
+# text = 'Русский.'
+# doc = en(text)
+# doc1 = es(text)
+# print(doc._.language)
+# print(doc1._.language)
+
+
+# <spacy_langdetect.spacy_langdetect.LanguageDetector object at 0x7f9a32246250>
+# <spacy.lang.en.English object at 0x7f2755492850>

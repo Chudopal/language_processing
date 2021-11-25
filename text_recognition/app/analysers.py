@@ -1,3 +1,4 @@
+from json import load
 import re
 from abc import ABC, abstractmethod, abstractclassmethod
 from string import punctuation
@@ -6,11 +7,14 @@ from models import Language
 from typing import Dict, Set
 
 import nltk
+import spacy
 from langdetect import detect
 from nltk import word_tokenize
 from nltk.corpus import wordnet as wn
 from nltk.tokenize import word_tokenize
 from nltk.stem.wordnet import WordNetLemmatizer
+from spacy.language import Language
+from spacy_langdetect import LanguageDetector
 
 
 class Analyzer(ABC):
@@ -119,18 +123,32 @@ class NeuralMethodAnalyzer(Analyzer):
     train_data: Dict = dict()
 
     def analyze_text(self):
-        for _, language in self.train_data.items():
-            if language == self.train_data.get(
-                detect(self._text)):
-                probability = 1
-            else:
-                probability = 0
-            self._language_probability.update({
-                language: probability
-            })
+        doc = self.model(self._text)
+        score = doc._.language.get("score")
+        another_score = 1 - score
+        self._language_probability.update({
+            self.train_data.pop(
+                doc._.language.get("language")
+                ): score,
+            list(self.train_data.values())[0]:
+                another_score
+        })
+
+    @staticmethod
+    def get_lang_detector(nlp, name):
+        return LanguageDetector()
 
     @classmethod
     def train(cls, text: str, language: Language) -> None:
+        cls.model = spacy.load("en_core_web_sm")
+        Language.factory(
+            "language_detector",
+            func=cls.get_lang_detector
+        )
+        cls.model.add_pipe(
+            'language_detector', last=True
+        )
         cls.train_data.update({
             text: language
         })
+        print(cls.train_data)
